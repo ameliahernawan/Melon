@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Melon</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="greeting">Selamat Datang di</string>
+    <string name="amelon">Aplikasi yang dapat membantu kamu mengetahui apakah melon kamu sudah matang atau belum</string>
+    <string name="welcome">Selamat Datang di</string>
+    <string name="title">AMELON</string>
+    <string name="description">Aplikasi yang dapat membantu kamu mengetahui apakah melon kamu sudah siap panen atau belum</string>
+    <string name="start">Mulai Sekarang</string>
+    <string name="background">background</string>
+    <string name="greenlinear">greenlinear</string>
+    <string name="howTo">Bagaimana cara menggunakan Amelon?</string>
+    <string name="tut_1">Masukan Foto Melon</string>
+    <string name="tut_2">Cropping Foto</string>
+    <string name="tut_3">Kirim dan Tunggu</string>
+    <string name="desc_tut3">Setelah foto dikirim, tunggu beberapa saat hingga hasil deteksi muncul</string>
+    <string name="desc_tut2">Pastikan hanya menyisakan buah melonnya saja</string>
+    <string name="desc_tut1">Pilih camera atau gallery untuk mengambil foto melonmu</string>
+</resources>
