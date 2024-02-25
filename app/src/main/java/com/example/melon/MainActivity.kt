@@ -24,9 +24,15 @@ import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
 import java.io.File
+//import org.opencv.core.MatOfInt
+import org.opencv.core.Size
+//import org.opencv.imgcodecs.Imgcodecs
+//import org.opencv.core.CvType
+//import org.opencv.core.MatOfByte
 
 
-class MainActivity : AppCompatActivity() {
+
+class  MainActivity : AppCompatActivity() {
 
 //    inisiasi variabel
     private lateinit var imageView: ImageView
@@ -37,15 +43,23 @@ class MainActivity : AppCompatActivity() {
 
     private var imageUri: Uri? = null
 
-    //        fungsi grayscale
-    fun preprocessImage(input:Mat): Mat{
+    fun resizeImage(input: Mat, targetWidth: Int, targetHeight: Int): Mat {
+        val resized = Mat()
+        val targetSize = Size(targetWidth.toDouble(), targetHeight.toDouble())
+        Imgproc.resize(input, resized, targetSize)
+        return resized
+    }
+
+    fun preprocessImage(input:Mat, targetWidth: Int, targetHeight: Int): Mat{
+        //resize image
+        val resized = resizeImage(input, targetWidth, targetHeight)
         val gray = Mat()
-        Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY)
+        Imgproc.cvtColor(resized, gray, Imgproc.COLOR_BGR2GRAY)
         Imgproc.equalizeHist(gray, gray)
         return gray
     }
 
-    //        fungsi untuk menampilkan gambar hasil preprocessing
+    //fungsi untuk menampilkan gambar hasil preprocessing
     fun displaypreprocessBitmap(bitmap: Bitmap){
         imageView.setImageBitmap(bitmap) 
     }
@@ -54,7 +68,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//      memanggil opencv
+        //button
+        imageView = findViewById(R.id.imageView)
+        cameraButton = findViewById(R.id.btnTakePhoto)
+        galleryButton = findViewById(R.id.btnChoosePhoto)
+
+        //memanggil opencv
         if (OpenCVLoader.initLocal()){
             Log.i(TAG, "OpenCV loaded successfully")
             Toast.makeText(this, "OpenCV berhasil", Toast.LENGTH_SHORT).show()
@@ -63,46 +82,18 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "OpenCV gagal", Toast.LENGTH_SHORT).show()
         }
 
-//      button
-        imageView = findViewById(R.id.imageView)
-        cameraButton = findViewById(R.id.btnTakePhoto)
-        galleryButton = findViewById(R.id.btnChoosePhoto)
-
-//        konfigurasi untuk UCrop
+        //konfigurasi UCrop
         val uCropOption = UCrop.Options().apply {
             setCircleDimmedLayer(true)
-//            setShowCropGrid(true)
         }
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()){
             success ->
                 if (success){
-                    //mengambil gambar dari URI
-                    val originalBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
-
-                    //mengonversi bitmap ke mat (opencv)
-                    val originalMat = Mat(originalBitmap.height, originalBitmap.width, CvType.CV_8UC4)
-                    Utils.bitmapToMat(originalBitmap, originalMat)
-
-                    //memproses gambar
-                    val processedMat = preprocessImage(originalMat)
-
-                    //konversi map kembali ke bitmap
-                    val processedBitmap = Bitmap.createBitmap(processedMat.cols(), processedMat.rows(), Bitmap.Config.ARGB_8888)
-                    Utils.matToBitmap(processedMat,processedBitmap)
-
-//                    tampilkan hasil preprocessing
-                    displaypreprocessBitmap(processedBitmap)
-
-//                    val options = UCrop.Options()
-//                    options.setCircleDimmedLayer(true)
-
                     UCrop.of(imageUri!!, Uri.fromFile(File(cacheDir, "cropped_image.jpg")))
                         .withAspectRatio(1f,1f)
                         .withOptions(uCropOption)
                         .start(this)
-
-//                    imageView.setImageBitmap(processedBitmap)
                 }else{
                     Toast.makeText(this, "Capture Failed", Toast.LENGTH_SHORT).show()
                 }
@@ -111,16 +102,10 @@ class MainActivity : AppCompatActivity() {
         galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){
                 uri: Uri? ->
             if (uri!= null){
-//                val options = UCrop.Options()
-//                options.setCircleDimmedLayer(true)
-//                options.setCompressionQuality(70)
-
                 UCrop.of(uri, Uri.fromFile(File(cacheDir, "cropped_image.jpg")))
                     .withAspectRatio(1f,1f)
                     .withOptions(uCropOption)
                     .start(this)
-                //menampilkan hasil
-//                imageView.setImageURI(uri)
             }
         }
 
@@ -134,7 +119,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 // membuat file untuk menyimpan gambar
                 val imageFile = File(cacheDir, "image${System.currentTimeMillis()}.jpg")
-//                val imageFile = File.createTempFile("image", ".jpg", cacheDir)
                 imageUri = FileProvider.getUriForFile(this, "com.example.melon.provider", imageFile)
                 cameraLauncher.launch(imageUri)
             }else{
@@ -155,13 +139,15 @@ class MainActivity : AppCompatActivity() {
             val resultUri = UCrop.getOutput(data!!)
             imageView.setImageURI(resultUri)
 
-//            ambil gambar setelah proses cropping
+            //ambil gambar setelah proses cropping
             val croppedBitmap = MediaStore.Images.Media.getBitmap(contentResolver, resultUri)
             val croppedMat = Mat(croppedBitmap.height, croppedBitmap.width, CvType.CV_8UC4)
             Utils.bitmapToMat(croppedBitmap,croppedMat)
 
-//            proses gambar setelah cropping
-            val processedCroppedMat = preprocessImage(croppedMat)
+            //proses gambar setelah cropping
+            val targetWidth = 416
+            val targetHeight = 416
+            val processedCroppedMat: Mat = preprocessImage(croppedMat, targetWidth, targetHeight)
             val processedCroppedBitmap = Bitmap.createBitmap(processedCroppedMat.cols(), processedCroppedMat.rows(), Bitmap.Config.ARGB_8888)
             Utils.matToBitmap(processedCroppedMat, processedCroppedBitmap)
 

@@ -17,4 +17,9 @@
     <string name="desc_tut3">Setelah foto dikirim, tunggu beberapa saat hingga hasil deteksi muncul</string>
     <string name="desc_tut2">Pastikan hanya menyisakan buah melonnya saja</string>
     <string name="desc_tut1">Pilih camera atau gallery untuk mengambil foto melonmu</string>
+    <string name="menu2">Data Melon</string>
+    <string name="menu1">Cek Melon</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="developer">Developer</string>
+    <string name="next">Next</string>
 </resources>
