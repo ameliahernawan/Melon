@@ -1,25 +1,64 @@
 <resources>
-    <string name="app_name">Melon</string>
+    <string name="app_name">Melon Helper</string>
     <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
-    <string name="greeting">Selamat Datang di</string>
-    <string name="amelon">Aplikasi yang dapat membantu kamu mengetahui apakah melon kamu sudah matang atau belum</string>
-    <string name="welcome">Selamat Datang di</string>
-    <string name="title">AMELON</string>
-    <string name="description">Aplikasi yang dapat membantu kamu mengetahui apakah melon kamu sudah siap panen atau belum</string>
-    <string name="start">Mulai Sekarang</string>
+    <string name="textsplash_1">Selamat Datang di Melon Helper</string>
+    <string name="title">Melon Helper</string>
+    <string name="description">Melon Helper dapat membantu kamu menentukan apakah melon kamu sudah siap panen atau belum dengan sekali click</string>
+    <string name="start">Start Now</string>
     <string name="background">background</string>
     <string name="greenlinear">greenlinear</string>
     <string name="howTo">Bagaimana cara menggunakan Amelon?</string>
-    <string name="tut_1">Masukan Foto Melon</string>
-    <string name="tut_2">Cropping Foto</string>
-    <string name="tut_3">Kirim dan Tunggu</string>
-    <string name="desc_tut3">Setelah foto dikirim, tunggu beberapa saat hingga hasil deteksi muncul</string>
-    <string name="desc_tut2">Pastikan hanya menyisakan buah melonnya saja</string>
-    <string name="desc_tut1">Pilih camera atau gallery untuk mengambil foto melonmu</string>
+    <string name="textsplash_2">Tanpa ribet, hanya perlu foto</string>
+    <string name="textspalsh_3">Fitur Khusus untuk Pakar Melon</string>
+    <string name="desc_splash2">Pilih atau ambil langsung foto melon, cropping hingga hanya menyisakan buahnya saja, dan selesai!</string>
+    <string name="desc_splash3">Kamu bisa login untuk memberikan feedback dari hasil deteksi kematangan melon yang diberikan</string>
     <string name="menu2">Data Melon</string>
     <string name="menu1">Cek Melon</string>
     <string name="tutorial">Tutorial</string>
     <string name="developer">Developer</string>
     <string name="next">Next</string>
+    <string name="namaFileImage">File Name: </string>
+    <string name="login_text1">Amelon ingin selalu meningkatkan akurasi deteksi</string>
+    <string name="login_text2">Kamu pakar melon yang dapat memberikan umpan balik dari hasil deteksi Amelon?</string>
+    <string name="login_text3">Gabung Sekarang!</string>
+    <string name="submit">Submit</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="lokasi">lokasi</string>
+    <string name="tut_1">Masukan Foto Melon</string>
+    <string name="tut_2">Cropping Foto </string>
+    <string name="tut_3">Kirim dan Tunggu</string>
+    <string name="desc_tut1">Pilih camera atau gallery untuk mengambil foto melonmu</string>
+    <string name="desc_tut2">Pastikan hanya menyisakan buah melonnya saja</string>
+    <string name="desc_tut3">Setelah foto dikirim, tunggu beberapa saat hingga hasil deteksi muncul</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hasil_deteksi">Hasil Deteksi Melon Kamu:</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="empty_image_warning">Masukan foto terlebih dahulu</string>
+
+    <string-array name="melon_name">
+        <item>Melon #1</item>
+        <item>Melon #2</item>
+        <item>Melon #3</item>    
+    </string-array>
+
+    <string-array name="melon_result">
+        <item>Siap Panen</item>
+        <item>Siap Panen</item>
+        <item>Belum Matang</item>
+    </string-array>
+
+    <string-array name="melon_date">
+        <item>9 April 2024</item>
+        <item>10 April 2024</item>
+        <item>10 April</item>
+    </string-array>
+    
+    <integer-array name="melon_photo">
+        <item>@drawable/amelon</item>
+        <item>@drawable/amelon</item>
+        <item>@drawable/amelon</item>
+    </integer-array>
 </resources>
