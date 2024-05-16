@@ -8,7 +8,7 @@ import retrofit2.http.Part
 
 interface ApiService {
     @Multipart
-    @POST("stories/guest")
+    @POST("/upload")
     suspend fun uploadImage(
         @Part file: MultipartBody.Part,
         @Part("lat") latitude: RequestBody,
