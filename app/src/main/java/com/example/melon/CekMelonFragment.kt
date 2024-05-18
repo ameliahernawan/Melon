@@ -26,28 +26,31 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.example.melon.data.api.ApiConfig
-import com.example.melon.data.api.FileUploadResponse
+import androidx.lifecycle.ViewModelProvider
+//import androidx.lifecycle.lifecycleScope
+//import androidx.lifecycle.viewmodel.compose.viewModel
+//import com.example.melon.data.api.ApiConfig
+//import com.example.melon.data.api.FileUploadResponse
+import com.example.melon.data.api.FileViewModel
 import com.example.melon.databinding.FragmentCekMelonBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.gson.Gson
+//import com.google.gson.Gson
 import com.theartofdev.edmodo.cropper.CropImage
-import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
+//import kotlinx.coroutines.launch
+//import okhttp3.MediaType.Companion.toMediaType
+//import okhttp3.MultipartBody
+//import okhttp3.RequestBody.Companion.asRequestBody
+//import okhttp3.RequestBody.Companion.toRequestBody
 //import org.opencv.android.NativeCameraView.TAG
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
-import retrofit2.HttpException
+//import retrofit2.HttpException
 //import java.io.InputStream
 
 
@@ -55,11 +58,13 @@ import retrofit2.HttpException
 class  CekMelonFragment : Fragment() {
     private lateinit var binding: FragmentCekMelonBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var viewModel: FileViewModel
     private var imageUri: Uri? = null
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationSettingsRequest: LocationSettingsRequest
     private var currentLatitude: Double? = null
     private var currentLongitude: Double? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,6 +90,39 @@ class  CekMelonFragment : Fragment() {
         if (OpenCVLoader.initDebug()){ Log.i(TAG, "OpenCV loaded successfully") }
 
         initLocationProviderClient()
+
+        viewModel = ViewModelProvider(this)[FileViewModel::class.java]
+        viewModel.uploadResult.observe(viewLifecycleOwner) { result ->
+            showLoading(false)
+            handleUploadResult(result)
+        }
+    }
+    private fun uploadImage() {
+        imageUri?.let {uri ->
+            val inputStream = requireContext().contentResolver.openInputStream(uri)
+            val originalBitmap = BitmapFactory.decodeStream(inputStream)
+            val resizedBitmap = getResizedBitmapCV(originalBitmap)
+            val resizedImageFile = bitmapToFile(resizedBitmap, requireContext())
+            Log.d("Image File", "showImage: ${resizedImageFile.path}")
+
+            showLoading(true)
+
+            if (currentLatitude == null || currentLongitude == null){
+                getUserLocation{
+                    viewModel.uploadImage(resizedImageFile, currentLatitude ?: 0.0, currentLongitude?:0.0)
+                }
+            } else{
+                viewModel.uploadImage(resizedImageFile, currentLatitude ?: 0.0, currentLongitude ?: 0.0)
+            }
+        } ?: showToast(getString(R.string.empty_image_warning))
+    }
+
+    private fun handleUploadResult(success: Boolean) {
+        if (success) {
+            showToast("Image uploaded successfully")
+        } else {
+            showToast("Failed to upload image")
+        }
     }
 
     private fun initLocationProviderClient() {
@@ -145,52 +183,6 @@ class  CekMelonFragment : Fragment() {
         return null
     }
 
-    private fun uploadImage() {
-        imageUri?.let {uri ->
-            val inputStream = requireContext().contentResolver.openInputStream(uri)
-            val originalBitmap = BitmapFactory.decodeStream(inputStream)
-            val resizedBitmap = getResizedBitmapCV(originalBitmap)
-            val resizedImageFile = bitmapToFile(resizedBitmap, requireContext())
-            Log.d("Image File", "showImage: ${resizedImageFile.path}")
-
-            showLoading(true)
-
-            val requestImageFile = resizedImageFile.asRequestBody("image/jpeg".toMediaType())
-            val multipartBody = MultipartBody.Part.createFormData(
-                "photo",
-                resizedImageFile.name,
-                requestImageFile
-            )
-
-            if (currentLatitude == null || currentLongitude == null){
-                getUserLocation{
-                    performUpload(multipartBody)
-                }
-            }else{
-                performUpload(multipartBody)
-            }
-        } ?: showToast(getString(R.string.empty_image_warning))
-    }
-
-    private fun performUpload(imagePart: MultipartBody.Part) {
-        val latitudeRequestBody = currentLatitude.toString().toRequestBody("text/plain".toMediaType())
-        val longitudeRequestBody = currentLongitude.toString().toRequestBody("text/plain".toMediaType())
-
-        lifecycleScope.launch {
-            try {
-                val apiService = ApiConfig.getApiService()
-                val successResponse = apiService.uploadImage(imagePart, latitudeRequestBody, longitudeRequestBody)
-                showToast(successResponse.message)
-            } catch (e: HttpException){
-                val errorBody = e.response()?.errorBody()?.string()
-                val errorResponse = Gson().fromJson(errorBody, FileUploadResponse::class.java)
-                showToast(errorResponse.message)
-            } finally {
-                showLoading(false)
-            }
-        }
-    }
-
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
@@ -198,8 +190,6 @@ class  CekMelonFragment : Fragment() {
     private fun showLoading(isLoading: Boolean) {
         binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
-
-
 
     //konfigurasi crop image
     private fun cropImage(uri: Uri?){

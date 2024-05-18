@@ -48,7 +48,7 @@
             android:theme="@style/Base.Theme.AppCompat"/>
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.melon.fileprovider"
+            android:authorities="com.example.melon.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
