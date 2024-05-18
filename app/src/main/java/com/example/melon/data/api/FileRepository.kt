@@ -11,30 +11,21 @@ import java.io.File
 
 class FileRepository {
     suspend fun uploadImage(file: File, latitude: Double, longitude: Double): Boolean{
-        return try{
-            val latitudeRequestBody = latitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-            val longitudeRequestBody = longitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val latitudeRequestBody = latitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val longitudeRequestBody = longitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 
-            val response = ApiService.instance.uploadImage (
+        return try{
+            ApiService.instance.uploadImage(
                 file = MultipartBody.Part.createFormData(
                         "image",
                         file.name,
-                        file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                ),
+                        file.asRequestBody("image/jpeg".toMediaTypeOrNull())),
                 latitude = latitudeRequestBody,
                 longitude = longitudeRequestBody
             )
-            Log.d("FileRepository", "Response: $response")
-            // Check if response is successful
-            if (response.success) {
-                // Do something with successful response, if needed
-                true
-            } else {
-                // Log error if response is not successful
-                Log.e("FileRepository", "Failed to upload image: $response")
-                false
-            }
-        } catch (e:IOException){
+            true
+        }
+        catch (e:IOException){
             Log.e("FileRepository", "IOException: ${e.message}")
             false
         } catch (e: HttpException){

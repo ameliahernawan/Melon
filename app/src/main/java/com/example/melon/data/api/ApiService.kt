@@ -13,14 +13,14 @@ interface ApiService {
     @POST("upload")
     suspend fun uploadImage(
         @Part file: MultipartBody.Part,
-        @Part("lat") latitude: RequestBody,
-        @Part("lon") longitude: RequestBody
+        @Part("latitude") latitude: RequestBody,
+        @Part("longitude") longitude: RequestBody
     ): FileUploadResponse
 
     companion object{
-        val instance by lazy{
+        val instance: ApiService by lazy{
             Retrofit.Builder()
-                .baseUrl("https://0b7f-111-94-103-21.ngrok-free.app/")
+                .baseUrl("https://3c19-111-94-94-238.ngrok-free.app")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService::class.java)

@@ -64,6 +64,8 @@ class  CekMelonFragment : Fragment() {
     private lateinit var locationSettingsRequest: LocationSettingsRequest
     private var currentLatitude: Double? = null
     private var currentLongitude: Double? = null
+    private var pendingImageUri: Uri? = null
+
 
 
     override fun onCreateView(
@@ -107,13 +109,17 @@ class  CekMelonFragment : Fragment() {
 
             showLoading(true)
 
-            if (currentLatitude == null || currentLongitude == null){
-                getUserLocation{
-                    viewModel.uploadImage(resizedImageFile, currentLatitude ?: 0.0, currentLongitude?:0.0)
-                }
-            } else{
-                viewModel.uploadImage(resizedImageFile, currentLatitude ?: 0.0, currentLongitude ?: 0.0)
+            getUserLocation{
+                viewModel.uploadImage(resizedImageFile, currentLatitude ?: 0.0, currentLongitude?:0.0)
             }
+
+//            if (currentLatitude == null || currentLongitude == null){
+//                getUserLocation{
+//                    viewModel.uploadImage(resizedImageFile, currentLatitude ?: 0.0, currentLongitude?:0.0)
+//                }
+//            } else{
+//                viewModel.uploadImage(resizedImageFile, currentLatitude ?: 0.0, currentLongitude ?: 0.0)
+//            }
         } ?: showToast(getString(R.string.empty_image_warning))
     }
 
@@ -149,6 +155,8 @@ class  CekMelonFragment : Fragment() {
             if(location != null){
                 currentLatitude = location.latitude
                 currentLongitude = location.longitude
+                Log.d(TAG, "Latitude: $currentLatitude, Longitude: $currentLongitude")
+                showToast("Latitude: $currentLatitude, Longitude: $currentLongitude")
                 callback()
             } else{
                 showToast("Unable to retrieve location")
@@ -242,7 +250,7 @@ class  CekMelonFragment : Fragment() {
             val croppedUri = result.uri
             croppedUri?.let {
                 displayResult(it)
-                saveCroppedImageToGallery(it)
+                someFunctionThatSavesImage(it)
             }
 
         } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
@@ -300,6 +308,7 @@ class  CekMelonFragment : Fragment() {
                         when (permission){
                             Manifest.permission.CAMERA -> binding.btnCamera.performClick()
                             Manifest.permission.ACCESS_FINE_LOCATION -> getUserLocation{}
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE -> pendingImageUri?.let { saveCroppedImageToGallery(it) }
                         }
                     }
                 }
@@ -307,6 +316,31 @@ class  CekMelonFragment : Fragment() {
                 Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun checkAndSaveImage(uri: Uri) {
+        pendingImageUri = uri
+        if (arePermissionsGranted()) {
+            saveCroppedImageToGallery(uri)
+        } else {
+            checkAndRequestPermissions()
+        }
+    }
+
+    private fun arePermissionsGranted(): Boolean {
+        val permissions = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        return permissions.all {
+            ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun someFunctionThatSavesImage(uri: Uri) {
+        checkAndSaveImage(uri)
     }
 
     companion object {
