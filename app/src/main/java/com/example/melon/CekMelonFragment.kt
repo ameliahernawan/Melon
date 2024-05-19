@@ -86,7 +86,12 @@ class  CekMelonFragment : Fragment() {
         binding.btnGallery.setOnClickListener {
             startGallery()
         }
-        binding.btnUpload.setOnClickListener {uploadImage()}
+        binding.btnUpload.setOnClickListener {
+            Log.d("UploadButtonClicked", "Upload button clicked, initiating image upload...")
+            uploadImage()
+            Log.d("UploadButtonClicked", "Image upload initiated.")
+        }
+
 
 //        memanggil opencv
         if (OpenCVLoader.initDebug()){ Log.i(TAG, "OpenCV loaded successfully") }
@@ -113,14 +118,8 @@ class  CekMelonFragment : Fragment() {
                 viewModel.uploadImage(resizedImageFile, currentLatitude ?: 0.0, currentLongitude?:0.0)
             }
 
-//            if (currentLatitude == null || currentLongitude == null){
-//                getUserLocation{
-//                    viewModel.uploadImage(resizedImageFile, currentLatitude ?: 0.0, currentLongitude?:0.0)
-//                }
-//            } else{
-//                viewModel.uploadImage(resizedImageFile, currentLatitude ?: 0.0, currentLongitude ?: 0.0)
-//            }
         } ?: showToast(getString(R.string.empty_image_warning))
+
     }
 
     private fun handleUploadResult(success: Boolean) {
