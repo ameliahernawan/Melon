@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Melon Helper</string>
     <string name="gallery">Gallery</string>
-    <string name="camera">Camera</string>
+    <string name="capture">Pilih Foto</string>
     <string name="textsplash_1">Selamat Datang di Melon Helper</string>
     <string name="title">Melon Helper</string>
     <string name="description">Melon Helper dapat membantu kamu menentukan apakah melon kamu sudah siap panen atau belum dengan sekali click</string>
@@ -35,7 +35,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hasil_deteksi">Hasil Deteksi Melon Kamu:</string>
-    <string name="upload_image">Upload Image</string>
+    <string name="upload_image">Mulai Deteksi</string>
     <string name="empty_image_warning">Masukan foto terlebih dahulu</string>
 
     <string-array name="melon_name">

@@ -30,9 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"/>
+        android:textSize="16sp"
+        android:textColor="@color/common_google_signin_btn_text_light_disabled"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
@@ -41,43 +40,31 @@
         android:layout_gravity="center"
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="30dp"
+        android:src="@drawable/input"/>
 
-    <LinearLayout
+    <Button
+        android:id="@+id/btnCapture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="20dp"
-        android:orientation="horizontal">
+        android:layout_margin="25dp"
+        android:padding="15dp"
+        android:backgroundTint="@color/primary"
+        android:text="@string/capture"
+        android:textColor="@color/secondary"
+        android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/btnCamera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:backgroundTint="@color/primary"
-            android:text="@string/camera"
-            android:textColor="@color/secondary"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/btnGallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:backgroundTint="@color/primary"
-            android:text="@string/gallery"
-            android:textColor="@color/secondary"
-            android:textSize="14sp" />
-    </LinearLayout>
     <Button
         android:id="@+id/btnUpload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:padding="15dp"
         android:text="@string/upload_image"
         android:textColor="@color/primary"
         android:textStyle="bold"
+        android:textSize="16sp"
         android:backgroundTint="@color/secondary"/>
 
 </LinearLayout>
